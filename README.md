@@ -17,7 +17,7 @@ Jhon Santamaria Cossio
 
 We're asked to, given a list of numbers, remove the data from it that falls outside a given interval.
 
-**Solution**
+#### Solution
 
 ```
 remData :: [Int] -> Int -> Int -> [Int]
@@ -27,15 +27,17 @@ remData (x:xs) low high
     | otherwise = remData xs low high      -- skips it
 ```
 
-**Explanation**
+#### Explanation
 
 This function recieves a list of type Int, and two values(the low and high limits of the interval) to finally return a list of type Int.
 
 It works by checking if 'x' (the first element of the list) is greater than the low limit and is smaller than the high limit, if it is, it's kept in the list and we add to it the recursion of the function with the rest of the list.
+
 In case 'x' doesn't meet these conditions, it's skipped and it just applies recursion of the function with the rest of the list.
+
 In case the list is empty, it just returns an empty list.
 
-**Problems during the development**
+#### Problems during the development
 
 
 
