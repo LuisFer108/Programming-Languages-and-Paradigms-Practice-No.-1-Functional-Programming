@@ -234,7 +234,7 @@ The `percentualError` function returns the percentual error of an 'x' approximat
     The solution was to change the base case to:
     `euler x 0 = 1`
   
-- When attempting to divide x^n (of type Double) by factorial n (of type Integer), Haskell generated a type error because the / operator only accepts floating-point values, and    Double cannot be directly mixed with Integer.
+- When attempting to divide x^n (of type Double) by factorial n (of type Integer), Haskell generated a type error because the / operator only accepts floating-point values, and Double cannot be directly mixed with Integer.
  
     Solution: Use the function fromIntegral to convert the Integer returned by factorial into a Double. In this way, the division is carried out between values of the same type, and     the program compiles correctly.
 
@@ -282,6 +282,7 @@ Percentual error:
 ### 2.2 Cosine function
 
 We're asked to implement the exponential function in Haskell using this formula:
+
 <img width="234" height="105" alt="Screenshot 2025-08-24 at 9 52 37 PM" src="https://github.com/user-attachments/assets/4731e214-5aab-4569-acf4-7e82688bb7de" />
 
 #### Solution
@@ -293,6 +294,7 @@ coseno :: Double -> Integer -> Double
 coseno x 0 = 0 --Stop condition
 coseno x n = ((-1) ^ (n-1)) * (x ** fromIntegral (2*(n-1))) / fromIntegral (factorial (2*(n-1))) + coseno x (n-1)
 ```
+
 
 #### Explanation
 
@@ -308,7 +310,7 @@ The `coseno` function just applies the formula provided before, but the sum is a
   The solution was just to put a parenthesis so there wasn't any ambiguity: `(-1) ^ (n-1)`.
 
 - **Type mis-matching problems**
-  Since I was using a variety of types I had trouble converting them correctly to whichever type was needed for the operations. My main problem was with the `/` operator, since it     only works with fractional types and I was trying to use it to divide by an Integer.
+  Since I was using a variety of types I had trouble converting them correctly to whichever type was needed for the operations. My main problem was with the `/` operator, since it only works with fractional types and I was trying to use it to divide by an Integer.
 
   The solution was to use `fromIntegral` to convert the Integer to a fractional type.
 
@@ -347,7 +349,57 @@ cos 1.5:
 7.07372016677029e-2
 Percentual error:
 0.0
-``
-  
+```
+
+
+---
 
   
+### 2.3 Natural logarithm function
+
+We're asked to implement the exponential function in Haskell using this formula:
+
+<img width="427" height="80" alt="Screenshot 2025-08-24 at 10 29 29 PM" src="https://github.com/user-attachments/assets/fba28223-39d5-4881-b808-54f8ab9d9220" />
+
+#### Solution
+
+```
+--Function that returns the power of a rational number. 
+--Double (x) = Base, Int (n) = Exponent
+expo :: Double -> Int -> Double
+expo _ 0 = 1
+expo x n = x * expo x (n-1) 
+
+--Function that adds all the terms of a list. 
+--It works the same as the built-in "sum" function
+suma :: [Double] -> Double
+suma [] = 0
+suma (x:xs) = x + suma xs 
+
+--Function that calculates the series by replicating the proposed summation. 
+--Double (x) = x value of the series, Int (n) = N value of the summation
+serie :: Double -> Int -> Double
+serie x n = suma [((expo (-1) (i+1)) / fromIntegral i) * (expo x i) | i <- [1..n]]
+
+--Function that reduces the argument of the logarithm to the interval (1,2].  
+--If it is > 2, it is divided by 2 and 1 is added to the counter.  
+--If it is between 0 and 1, it is multiplied by 2 and 1 is subtracted from the counter.
+redarg :: Double -> Int -> (Double, Int)
+redarg y c
+  | y >= 1 && y <= 2 = (y,c)
+  | y > 2 = redarg (y/2) (c+1)
+  | y < 1 = redarg (y*2) (c-1)
+
+--Function that returns the natural logarithm of a rational number. 
+--Double (x) = Argument of the logarithm, Int (n) = Precision degree of the series
+ln :: Double -> Int -> Double
+ln z n =
+  let (y,c) = redarg z 0
+      x = y-1
+      base = serie x n
+      ln2 = serie 1 n
+  in base + fromIntegral c * ln2
+```
+
+  
+#### Explanation
