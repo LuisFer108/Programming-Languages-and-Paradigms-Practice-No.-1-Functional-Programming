@@ -8,6 +8,7 @@ Luis Fernando Bernal Ramirez
 
 Jhon David Santamaria Cossio
 
+Explicative Video: https://youtu.be/y2FOL6RqqMk
 
 ---
 
