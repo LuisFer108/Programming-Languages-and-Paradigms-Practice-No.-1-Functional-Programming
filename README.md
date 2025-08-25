@@ -13,7 +13,7 @@ Jhon David Santamaria Cossio
 
 ## 1. Useful functions
 
-### 1.Remove data outside an interval.
+### 1.1 Remove data outside an interval.
 
 We're asked to, given a list of numbers, remove the data from it that falls outside a given interval.
 
@@ -35,7 +35,7 @@ It works by checking if 'x' (the first element of the list) is greater than the 
 
 In case 'x' doesn't meet these conditions, it's skipped and it just applies recursion of the function with the rest of the list.
 
-In case the list is empty, it just adds an empty list and stops.
+When the list is empty, it just adds an empty list and stops.
 
 #### How to use
 1. Save `practice1haskell.hs` in a folder.
@@ -47,7 +47,7 @@ In case the list is empty, it just adds an empty list and stops.
 
 #### Test results
 
-You can run this tests by yourself in the program with the function `testRemData`-
+You can run this tests by yourself in the program with the function `testRemData`
 
 ```
 Input:
