@@ -403,3 +403,69 @@ ln z n =
 
   
 #### Explanation
+
+The `expo` function recursively computes the power of a number. It receives a base `x` (of type `Double`) and an exponent `n` (of type `Int`). The base case is when `n = 0`, in which case the result is `1`. Otherwise, it multiplies the base `x` by the recursive call with exponent `n-1`, effectively building the product \(x^n\).  
+
+The `suma` function recursively calculates the sum of all the terms in a list of type `[Double]`. If the list is empty, the result is `0`. Otherwise, it adds the head of the list (`x`) to the recursive sum of the tail (`xs`). This function behaves the same as Haskell’s built-in `sum`.  
+
+The `serie` function implements the summation formula for the natural logarithm. It receives the value `x` of the series and the number of terms `n` to be calculated. Internally, it builds a list comprehension that generates each term of the series using the `expo` function both for powers of `-1` and powers of `x`, while also applying `fromIntegral` to correctly handle division with integer denominators. The resulting list of terms is then summed using the `suma` function.  
+
+The `redarg` function reduces the argument of the logarithm to the interval \((1, 2]\). If the value is greater than 2, it is divided by 2 and the counter `c` is incremented by 1. If the value is between 0 and 1, it is multiplied by 2 and the counter `c` is decremented by 1. This process repeats recursively until the value lies within \((1, 2]\). The result is returned as a pair `(y, c)`, where `y` is the reduced value and `c` stores how many times the argument was adjusted.  
+
+Finally, the `ln` function computes the natural logarithm of a given number `z` with a chosen precision `n`. It first calls `redarg` to reduce the argument into the interval \((1, 2]\), obtaining a reduced value `y` and a counter `c`. Then it sets `x = y - 1` and applies the `serie` function to approximate \(\ln(1+x)\). Since the logarithm properties imply that every time the argument was halved or doubled, a correction by \(\ln(2)\) must be added, the function calculates \(\ln(2)\) separately (via `serie 1 n`) and multiplies it by the counter `c`. The final result is the approximation of the natural logarithm.
+
+
+#### Problems during development
+
+The main problem with the function that calculates the natural logarithm was the range of convergence of the series. The fact that the logarithm’s argument could only be between 0 and 2 made the calculation difficult for larger numbers.  
+
+This was solved by creating the `redarg` function, which reduces the argument of the logarithm to the optimal interval for efficient convergence \((1 \leq y < 2)\). This is done by repeatedly dividing or multiplying by 2, and then adding or subtracting \(\ln(2)\) according to the number of times the process was applied.
+
+
+#### How to use
+1. Save `practice1haskell.hs` in a folder.
+2. Open a terminal in that folder.
+3. Run `ghci practice1haskell.hs`.
+4. Write `ln 'value to which apply the logarithm function' 'precision degree of the series'`, then press enter.
+5. Now you should see the result of the logarithm function applied to the number you provided.
+6. Alternatively you can run `testLn` after step 3 for some preset examples.
+
+
+#### Test results
+
+You can run this tests by yourself in the program with the function `testLn`
+
+```
+ln 7.23 20:
+1.929185637648903
+log 7.23:
+1.9782390361706734
+Percentual error:
+2.479649709911921
+------------------
+ln 7.23 100:
+1.968289033668872
+log 7.23:
+1.9782390361706734
+Percentual error:
+0.5029727105710038
+------------------
+ln 7.23 400:
+1.9757421611609076
+log 7.23:
+1.9782390361706734
+Percentual error:
+0.1262170528491376
+```
+
+
+---
+
+
+## 3. Discrete signal processing techniques
+
+We're asked to develop a program that can compute a Discrete Cosine Transform (DCT) on a set of data x(n) = {x0,x1,...,xN−1}, composed by N points (0 ≤n≤N−1) using the next expressions:
+
+<img width="1046" height="270" alt="Screenshot 2025-08-24 at 11 02 08 PM" src="https://github.com/user-attachments/assets/28bb5138-0848-4d24-ad84-fe1bd3ee2b24" />
+
+#### Solution
