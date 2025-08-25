@@ -469,3 +469,93 @@ We're asked to develop a program that can compute a Discrete Cosine Transform (D
 <img width="1046" height="270" alt="Screenshot 2025-08-24 at 11 02 08 PM" src="https://github.com/user-attachments/assets/28bb5138-0848-4d24-ad84-fe1bd3ee2b24" />
 
 #### Solution
+
+```
+-- Function that counts the number of elements in a Double array.
+arrSize :: [Double] -> Int
+arrSize [] = 0
+arrSize (_:xs) = 1 + arrSize xs
+
+-- Summation of the formula.
+dctSum :: [Double] -> Int -> Int -> Int -> Double
+dctSum [] _ _ _ = 0
+dctSum (x:xs) i k n =
+  x * cosAux i k n + dctSum xs (i+1) k n
+
+-- Inner cosine in the formula.
+cosAux :: Int -> Int -> Int -> Double
+cosAux i k n =
+  cos (((fromIntegral i + 0.5) * pi * fromIntegral k) / fromIntegral n)
+
+-- a(k) function from the formula (normalization factor).
+a :: Int -> Int -> Double
+a k n
+  | k == 0    = sqrt (1 / fromIntegral n)
+  | otherwise = sqrt (2 / fromIntegral n)
+
+-- Function that builds the resulting list
+dctAux :: [Double] -> Int -> Int -> [Double]
+dctAux xs n k
+  | k == n    = []
+  | otherwise = a k n * dctSum xs 0 k n : dctAux xs n (k+1)
+
+-- Main DCT function
+dct :: [Double] -> [Double]
+dct xs =
+  let n = arrSize xs
+  in dctAux xs n 0
+```
+
+
+#### Explanation  
+
+The `arrSize` function counts how many elements are in a list. If the list is empty, it returns 0. Otherwise, it adds 1 and keeps counting the rest of the list.  
+
+The `cosAux` function calculates the cosine part of the formula using the position of the element (`i`), the current coefficient we are calculating (`k`), and the size of the list (`n`).  
+
+The `dctSum` function goes through the list and, for each element, multiplies it by the cosine part given by `cosAux`. It then adds all these results together.  
+
+The `a` function is a small helper that applies a correction factor to make sure the final result is scaled correctly. When `k = 0` it uses one formula, and for any other `k` it uses a slightly different one.  
+
+The `dctAux` function builds the final list of results. It repeats the process for every value of `k` from 0 to `n-1`, calling `dctSum` each time and multiplying by the correction factor `a`.  
+
+Finally, the `dct` function is the main one. It first counts the number of elements in the list, and then calls `dctAux` to calculate the whole transformation. The result is a new list of numbers, which are the DCT coefficients of the original list.  
+
+
+#### Problems during development
+
+- **Off-by-one error in the summation**  
+  When writing the recursive summation (`dctSum`), the index `i` was not being increased correctly, which led to repeating the same value for every term.  
+  The solution was to increment `i` in the recursive call so that each element of the list used the right index.  
+
+- **Normalization factor**  
+  At first, the normalization factor `a(k)` was forgotten. Without it, the results were not properly scaled and did not match the expected DCT.  
+  The solution was to implement the function `a` so that for `k = 0` it applies \(\sqrt{1/n}\), and for other values of `k` it applies \(\sqrt{2/n}\).  
+
+- **Mixing integer and floating-point types**  
+  Since the formula involves both integers (`i`, `k`, `n`) and floating-point values (`Double`), Haskell raised type errors when dividing or multiplying them.  
+  The solution was to use `fromIntegral` to convert integers into floating-point numbers whenever necessary.  
+
+
+
+#### How to use
+1. Save `practice1haskell.hs` in a folder.
+2. Open a terminal in that folder.
+3. Run `ghci practice1haskell.hs`.
+4. Write `dct '[list]'`, then press enter.
+5. Now you should see the result of the dct main function applied to the list of numbers you provided.
+6. Alternatively you can run `testDCT` after step 3 for some preset examples.
+
+
+
+#### Test results
+
+You can run this tests by yourself in the program with the function `testDCT`
+
+```
+dct [1..10]:
+[17.392527130926087,-9.024851126140828,-2.830088934701891e-15,-0.9666569027727295,-1.2909177596885819e-15,-0.31622776601684044,-2.1846300548576e-15,-0.1278703926857898,2.383232787117382e-15,-3.585730038388234e-2]
+------------------
+dct [10..20]:
+[49.749371855331,-10.419458513927616,-9.846734317246358e-15,-1.1238025464122283,-4.5446466079598574e-15,-0.3757237686458099,-1.5148822026532858e-15,-0.16287097213723006,-1.552754257719618e-14,-6.524422831322295e-2,1.1361616519899644e-15]
+```
