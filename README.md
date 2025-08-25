@@ -522,7 +522,7 @@ The `dctAux` function builds the final list of results. It repeats the process f
 Finally, the `dct` function is the main one. It first counts the number of elements in the list, and then calls `dctAux` to calculate the whole transformation. The result is a new list of numbers, which are the DCT coefficients of the original list.  
 
 
-#### Problems during development
+#### Problems during development  
 
 - **Off-by-one error in the summation**  
   When writing the recursive summation (`dctSum`), the index `i` was not being increased correctly, which led to repeating the same value for every term.  
@@ -530,7 +530,12 @@ Finally, the `dct` function is the main one. It first counts the number of eleme
 
 - **Normalization factor**  
   At first, the normalization factor `a(k)` was forgotten. Without it, the results were not properly scaled and did not match the expected DCT.  
-  The solution was to implement the function `a` so that for `k = 0` it applies \(\sqrt{1/n}\), and for other values of `k` it applies \(\sqrt{2/n}\).  
+  The solution was to implement the function `a` so that:  
+
+  $$
+  a(0) = \sqrt{\tfrac{1}{n}}, \qquad 
+  a(k) = \sqrt{\tfrac{2}{n}} \quad \text{for } k > 0
+  $$
 
 - **Mixing integer and floating-point types**  
   Since the formula involves both integers (`i`, `k`, `n`) and floating-point values (`Double`), Haskell raised type errors when dividing or multiplying them.  
