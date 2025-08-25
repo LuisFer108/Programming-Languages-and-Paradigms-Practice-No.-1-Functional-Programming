@@ -97,8 +97,6 @@ The 'orderList' function works in a recursive way. It first takes the first elem
 
 To achieve that order, it uses the 'InsertList' function, which recieves a number and an ordered list. This function compares the number with the elements of the list: if it is greater than or equal to the first, it inserts it there; if it is less, it continues to compare until it positions it in the right position.
 
-In this way, each time the list is rebuilt in the way back of the recursion, it gets built in an ordered way from greater to less.
-
 In this way, each time the list is reconstructed upon return from the recursion, it is formed in an orderly manner from largest to smallest.
 
 #### Problems during development
